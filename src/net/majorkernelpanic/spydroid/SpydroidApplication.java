@@ -42,7 +42,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.hardware.Camera;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 @ReportsCrashes(formKey = "dGhWbUlacEV6X0hlS2xqcmhyYzNrWlE6MQ", customReportContent = { APP_VERSION_NAME, PHONE_MODEL, BRAND, PRODUCT, ANDROID_VERSION, STACK_TRACE, USER_APP_START_DATE, USER_CRASH_DATE, LOGCAT, DEVICE_FEATURES, SHARED_PREFERENCES })
 public class SpydroidApplication extends android.app.Application {
@@ -93,12 +95,49 @@ public class SpydroidApplication extends android.app.Application {
 		audioEncoder = Integer.parseInt(settings.getString("audio_encoder", String.valueOf(audioEncoder)));
 		videoEncoder = Integer.parseInt(settings.getString("video_encoder", String.valueOf(videoEncoder)));
 
-		// Read video quality settings from the preferences 
+		// Read video quality settings from the preferences
+
+		/**
 		videoQuality = new VideoQuality(
 						settings.getInt("video_resX", videoQuality.resX),
 						settings.getInt("video_resY", videoQuality.resY), 
 						Integer.parseInt(settings.getString("video_framerate", String.valueOf(videoQuality.framerate))), 
 						Integer.parseInt(settings.getString("video_bitrate", String.valueOf(videoQuality.bitrate/1000)))*1000);
+		**/
+
+		Log.d(TAG,"video_resX is: " +Integer.toString(settings.getInt("video_resY", videoQuality.resY)));
+		/**
+		videoQuality = new VideoQuality(
+				        settings.getInt("video_resX", videoQuality.resX),
+						settings.getInt("video_resY", videoQuality.resY),
+						Integer.parseInt(settings.getString("video_framerate", String.valueOf(videoQuality.framerate))),
+						Integer.parseInt(settings.getString("video_bitrate", String.valueOf(videoQuality.bitrate/1000)))*1000);
+		 **/
+
+
+		/** A safe way to get an instance of the Camera object. */
+		Camera c = null;
+		try {
+			c = Camera.open(); // attempt to get a Camera instance
+		}
+		catch (Exception e){
+			// Camera is not available (in use or does not exist)
+		}
+
+		VideoQuality testQuality = new VideoQuality(
+				settings.getInt("video_resX", videoQuality.resX),
+				settings.getInt("video_resY", videoQuality.resY),
+				Integer.parseInt(settings.getString("video_framerate", String.valueOf(videoQuality.framerate))),
+				Integer.parseInt(settings.getString("video_bitrate", String.valueOf(videoQuality.bitrate/1000)))*1000);
+
+		testQuality = VideoQuality.determineClosestSupportedResolution(c.getParameters(), testQuality);
+		c.release();
+		videoQuality = new VideoQuality(
+				testQuality.resX,
+				testQuality.resY,
+				Integer.parseInt(settings.getString("video_framerate", String.valueOf(videoQuality.framerate))),
+				Integer.parseInt(settings.getString("video_bitrate", String.valueOf(videoQuality.bitrate/1000)))*1000);
+
 
 		SessionBuilder.getInstance() 
 		.setContext(getApplicationContext())

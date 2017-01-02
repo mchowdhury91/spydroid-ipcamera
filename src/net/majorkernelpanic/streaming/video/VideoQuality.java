@@ -72,8 +72,8 @@ public class VideoQuality {
 
 	public boolean equals(VideoQuality quality) {
 		if (quality==null) return false;
-		return (quality.resX == this.resX 				&
-				quality.resY == this.resY 				&
+		return (quality.resX == this.resX 			&
+				quality.resY == this.resY 			&
 				quality.framerate == this.framerate	&
 				quality.bitrate == this.bitrate);
 	}
@@ -97,6 +97,10 @@ public class VideoQuality {
 		return quality;
 	}
 
+	public String toString() {
+		return resX+"x"+resY+" px, "+framerate+" fps, "+bitrate/1000+" kbps";
+	}
+	
 	/** 
 	 * Checks if the requested resolution is supported by the camera.
 	 * If not, it modifies it by supported parameters. 
@@ -105,7 +109,7 @@ public class VideoQuality {
 		VideoQuality v = quality.clone();
 		int minDist = Integer.MAX_VALUE;
 		String supportedSizesStr = "Supported resolutions: ";
-		List<Size> supportedSizes = parameters.getSupportedPreviewSizes();
+		List<Size> supportedSizes = parameters.getSupportedVideoSizes();
 		for (Iterator<Size> it = supportedSizes.iterator(); it.hasNext();) {
 			Size size = it.next();
 			supportedSizesStr += size.width+"x"+size.height+(it.hasNext()?", ":"");
@@ -120,7 +124,6 @@ public class VideoQuality {
 		if (quality.resX != v.resX || quality.resY != v.resY) {
 			Log.v(TAG,"Resolution modified: "+quality.resX+"x"+quality.resY+"->"+v.resX+"x"+v.resY);
 		}
-		
 		return v;
 	}
 
@@ -130,6 +133,7 @@ public class VideoQuality {
 		List<int[]> supportedFpsRanges = parameters.getSupportedPreviewFpsRange();
 		for (Iterator<int[]> it = supportedFpsRanges.iterator(); it.hasNext();) {
 			int[] interval = it.next();
+			// Intervals are returned as integers, for example "29970" means "29.970" FPS.
 			supportedFpsRangesStr += interval[0]/1000+"-"+interval[1]/1000+"fps"+(it.hasNext()?", ":"");
 			if (interval[1]>maxFps[1] || (interval[0]>maxFps[0] && interval[1]==maxFps[1])) {
 				maxFps = interval; 

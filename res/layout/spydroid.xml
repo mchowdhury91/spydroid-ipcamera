@@ -40,7 +40,7 @@
                 android:paddingTop="4dp"
                 android:textColor="#fff" />
         </android.support.v4.view.ViewPager>
-
+        <!--
         <LinearLayout
             android:id="@+id/adcontainer"
             android:layout_width="match_parent"
@@ -58,7 +58,7 @@
                 ads:loadAdOnCreate="true"
                 ads:testDevices="TEST_EMULATOR" >
             </com.google.ads.AdView>
-        </LinearLayout>
+        </LinearLayout> -->
     </RelativeLayout>
     
 </FrameLayout>

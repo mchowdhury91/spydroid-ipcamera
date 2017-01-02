@@ -1,3 +1,17 @@
+# DISCLAIMER
+
+* I am a completely novice programmer, these changes will likely not work for you.
+* Most of these changes are very quick/dirty fixes that do not follow best practices.
+* The purpose of this repo is to make it easy for my teammates to see what changes I made.
+* The purpose of these updates is to get Spydroid working on a Nexus 6P running Nougat.
+
+# Summary of Quick Fixes
+
+* Forced the app to use MediaCodec API regardless of the mode chosen because I could not get MediaRecorder working properly.
+* MediaRecorder was not working because as of API 23, you cannot use ParcelFileDescriptor in MediaRecorder setOutputFile method.
+* I imported fyhertz's updated libstreaming which is in a separate repo from his spydroid repo.
+* I made some other miscellaneous changes to get the app running on my Nexus 6P.
+
 # Spydroid-ipcamera
 
 * Spydroid is a little app. that *streams the camera and microphone of your phone to your browser or to VLC !*
