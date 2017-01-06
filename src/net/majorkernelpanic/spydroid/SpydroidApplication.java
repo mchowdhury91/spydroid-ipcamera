@@ -96,26 +96,14 @@ public class SpydroidApplication extends android.app.Application {
 		videoEncoder = Integer.parseInt(settings.getString("video_encoder", String.valueOf(videoEncoder)));
 
 		// Read video quality settings from the preferences
-
-		/**
 		videoQuality = new VideoQuality(
-						settings.getInt("video_resX", videoQuality.resX),
-						settings.getInt("video_resY", videoQuality.resY), 
-						Integer.parseInt(settings.getString("video_framerate", String.valueOf(videoQuality.framerate))), 
-						Integer.parseInt(settings.getString("video_bitrate", String.valueOf(videoQuality.bitrate/1000)))*1000);
-		**/
-
-		Log.d(TAG,"video_resX is: " +Integer.toString(settings.getInt("video_resY", videoQuality.resY)));
-		/**
-		videoQuality = new VideoQuality(
-				        settings.getInt("video_resX", videoQuality.resX),
-						settings.getInt("video_resY", videoQuality.resY),
-						Integer.parseInt(settings.getString("video_framerate", String.valueOf(videoQuality.framerate))),
-						Integer.parseInt(settings.getString("video_bitrate", String.valueOf(videoQuality.bitrate/1000)))*1000);
-		 **/
+				settings.getInt("video_resX", videoQuality.resX),
+				settings.getInt("video_resY", videoQuality.resY),
+				Integer.parseInt(settings.getString("video_framerate", String.valueOf(videoQuality.framerate))),
+				Integer.parseInt(settings.getString("video_bitrate", String.valueOf(videoQuality.bitrate/1000)))*1000);
 
 
-		/** A safe way to get an instance of the Camera object. */
+		// get an instance of the Camera object to determine closest supported resolution
 		Camera c = null;
 		try {
 			c = Camera.open(); // attempt to get a Camera instance
@@ -124,20 +112,9 @@ public class SpydroidApplication extends android.app.Application {
 			// Camera is not available (in use or does not exist)
 		}
 
-		VideoQuality testQuality = new VideoQuality(
-				settings.getInt("video_resX", videoQuality.resX),
-				settings.getInt("video_resY", videoQuality.resY),
-				Integer.parseInt(settings.getString("video_framerate", String.valueOf(videoQuality.framerate))),
-				Integer.parseInt(settings.getString("video_bitrate", String.valueOf(videoQuality.bitrate/1000)))*1000);
-
-		testQuality = VideoQuality.determineClosestSupportedResolution(c.getParameters(), testQuality);
+		videoQuality = VideoQuality.determineClosestSupportedResolution(c.getParameters(), videoQuality);
+		// release the Camera object so it can be used by other classes later on in the application
 		c.release();
-		videoQuality = new VideoQuality(
-				testQuality.resX,
-				testQuality.resY,
-				Integer.parseInt(settings.getString("video_framerate", String.valueOf(videoQuality.framerate))),
-				Integer.parseInt(settings.getString("video_bitrate", String.valueOf(videoQuality.bitrate/1000)))*1000);
-
 
 		SessionBuilder.getInstance() 
 		.setContext(getApplicationContext())
